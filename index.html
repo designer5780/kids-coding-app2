@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 مغامرات البرمجة للأطفال</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, Arial;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4, #FECA57);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+        }
+
+        .game-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-section.active {
+            display: block;
+        }
+
+        /* Puzzle Game Styles */
+        .puzzle-container {
+            display: flex;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .puzzle-pieces {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 250px;
+        }
+
+        .puzzle-piece {
+            background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+            color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .puzzle-piece:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .puzzle-piece.start { background: linear-gradient(45deg, #4CAF50, #66BB6A); }
+        .puzzle-piece.move { background: linear-gradient(45deg, #2196F3, #42A5F5); }
+        .puzzle-piece.turn { background: linear-gradient(45deg, #FF9800, #FFB74D); }
+        .puzzle-piece.end { background: linear-gradient(45deg, #F44336, #EF5350); }
+
+        .puzzle-area {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .drop-zone {
+            background: #e3f2fd;
+            border: 3px dashed #90CAF9;
+            border-radius: 15px;
+            min-height: 120px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .drop-zone.active {
+            background: #c8e6c9;
+            border-color: #4CAF50;
+        }
+
+        .dropped-piece {
+            background: rgba(255,255,255,0.9);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 5px;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .canvas-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .game-canvas {
+            background: #f0f8ff;
+            border: 3px solid #4ECDC4;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Pattern Game */
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 400px;
+            margin: 30px auto;
+        }
+
+        .pattern-cell {
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 3px solid transparent;
+        }
+
+        .pattern-cell:hover {
+            transform: scale(1.1);
+        }
+
+        .pattern-cell.red { background: #FF6B6B; }
+        .pattern-cell.blue { background: #4ECDC4; }
+        .pattern-cell.green { background: #96CEB4; }
+        .pattern-cell.yellow { background: #FECA57; }
+        .pattern-cell.empty { 
+            background: #f8f9fa; 
+            border: 3px dashed #ddd;
+        }
+
+        /* Logic Game */
+        .logic-puzzle {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px auto;
+            flex-wrap: wrap;
+        }
+
+        .logic-block {
+            background: #f8f9fa;
+            border: 3px dashed #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            font-size: 36px;
+            min-width: 100px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logic-block.filled {
+            border: 3px solid #4ECDC4;
+            background: #4ECDC4;
+            color: white;
+        }
+
+        .logic-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .logic-option {
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .logic-option:hover {
+            transform: scale(1.1);
+        }
+
+        .logic-option.selected {
+            background: #4ECDC4;
+        }
+
+        .btn {
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn.warning { background: #FF9800; }
+        .btn.success { background: #4CAF50; }
+
+        .message {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .message.success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .message.info {
+            background: #2196F3;
+            color: white;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .puzzle-container { flex-direction: column; }
+            .pattern-grid { grid-template-columns: repeat(2, 1fr); }
+            .logic-puzzle { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎮 مغامرات البرمجة للأطفال</h1>
+            <p>تعلم البرمجة بطريقة البازل والألعاب! 🚀</p>
+            <p style="font-size: 1em; color: #777;">مجاني تماماً من FolioCrafter - آمن للأطفال</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showGame('robot')">🤖 بازل الروبوت</button>
+            <button class="nav-tab" onclick="showGame('pattern')">🎨 الأنماط</button>
+            <button class="nav-tab" onclick="showGame('logic')">🧠 المنطق</button>
+        </div>
+
+        <!-- Robot Puzzle Game -->
+        <div id="robot" class="game-section active">
+            <h2 style="color: #4ECDC4; text-align: center; margin-bottom: 20px;">🤖 بازل تحريك الروبوت</h2>
+            <p style="text-align: center; margin-bottom: 20px;">انقر على قطع البازل لتحريك الروبوت للنجمة!</p>
+            
+            <div class="puzzle-container">
+                <div class="puzzle-pieces">
+                    <h3 style="text-align: center; margin-bottom: 15px;">🧩 قطع البازل</h3>
+                    <div class="puzzle-piece start" onclick="addPiece('start', '🚀 ابدأ')">🚀 ابدأ</div>
+                    <div class="puzzle-piece move" onclick="addPiece('forward', '⬆️ تقدم')">⬆️ تقدم</div>
+                    <div class="puzzle-piece turn" onclick="addPiece('right', '↩️ يمين')">↩️ يمين</div>
+                    <div class="puzzle-piece turn" onclick="addPiece('left', '↪️ يسار')">↪️ يسار</div>
+                    <div class="puzzle-piece end" onclick="addPiece('end', '🏁 انتهي')">🏁 انتهي</div>
+                </div>
+
+                <div class="puzzle-area">
+                    <h3>📝 ترتيب الأوامر:</h3>
+                    <div class="drop-zone" id="commandSequence">
+                        <p style="color: #666; text-align: center; width: 100%;">انقر على قطع البازل لإضافتها هنا</p>
+                    </div>
+                    
+                    <div class="canvas-container">
+                        <canvas id="robotCanvas" class="game-canvas" width="400" height="300"></canvas>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button class="btn" onclick="runSequence()">▶️ شغل الروبوت</button>
+                        <button class="btn warning" onclick="clearCommands()">🗑️ امسح الكل</button>
+                        <button class="btn warning" onclick="resetRobot()">🔄 إعادة تشغيل</button>
+                    </div>
+
+                    <div id="robotMessage"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pattern Game -->
+        <div id="pattern" class="game-section">
+            <h2 style="color: #FF6B6B; text-align: center; margin-bottom: 20px;">🎨 لعبة الأنماط الملونة</h2>
+            <p style="text-align: center; margin-bottom: 20px;">انقر على المربعات الفارغة لإكمال النمط!</p>
+            
+            <div class="pattern-grid" id="patternGrid">
+                <!-- سيتم إنشاؤها بواسطة JavaScript -->
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" onclick="checkPattern()">✅ تحقق من الإجابة</button>
+                <button class="btn warning" onclick="newPattern()">🎲 نمط جديد</button>
+            </div>
+
+            <div id="patternMessage"></div>
+        </div>
+
+        <!-- Logic Game -->
+        <div id="logic" class="game-section">
+            <h2 style="color: #96CEB4; text-align: center; margin-bottom: 20px;">🧠 لعبة التفكير المنطقي</h2>
+            <p style="text-align: center; margin-bottom: 20px;">اختر الإجابة الصحيحة لإكمال التسلسل!</p>
+            
+            <div class="logic-puzzle" id="logicPuzzle">
+                <!-- سيتم إنشاؤها بواسطة JavaScript -->
+            </div>
+
+            <div class="logic-options" id="logicOptions">
+                <!-- سيتم إنشاؤها بواسطة JavaScript -->
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" onclick="checkLogic()">✅ تحقق من الإجابة</button>
+                <button class="btn warning" onclick="newLogic()">🎲 تحدي جديد</button>
+            </div>
+
+            <div id="logicMessage"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>🎓 مغامرات البرمجة للأطفال</strong></p>
+            <p>تطبيق مجاني من FolioCrafter لتعليم البرمجة بطريقة ممتعة</p>
+            <p>© 2025 FolioCrafter - آمن للأطفال من 6-12 سنة</p>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        // متغيرات اللعبة
+        let robotCommands = [];
+        let robotPos = { x: 50, y: 150 };
+        let robotDir = 0; // 0=يمين, 1=أسفل, 2=يسار, 3=أعلى
+        let currentPattern = [];
+        let userAnswers = [];
+        let logicAnswer = null;
+
+        // بدء التطبيق
+        document.addEventListener('DOMContentLoaded', function() {
+            initRobot();
+            createPattern();
+            createLogic();
+        });
+
+        // تبديل الألعاب
+        function showGame(gameId) {
+            // إخفاء جميع الألعاب
+            document.querySelectorAll('.game-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // إزالة التحديد من جميع الأزرار
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // إظهار اللعبة المحددة
+            document.getElementById(gameId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ===== لعبة الروبوت =====
+        
+        function initRobot() {
+            robotPos = { x: 50, y: 150 };
+            robotDir = 0;
+            const canvas = document.getElementById('robotCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // مسح الشاشة
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // رسم الشبكة
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= canvas.width; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+            }
+            for (let i = 0; i <= canvas.height; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvas.width, i);
+                ctx.stroke();
+            }
+            
+            // رسم النجمة (الهدف)
+            ctx.fillStyle = '#FFD700';
+            ctx.font = '30px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('⭐', 350, 120);
+            
+            drawRobot();
+        }
+
+        function drawRobot() {
+            const canvas = document.getElementById('robotCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // مسح منطقة الروبوت
+            ctx.clearRect(robotPos.x - 25, robotPos.y - 25, 50, 50);
+            
+            // إعادة رسم الشبكة في منطقة الروبوت
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            const startX = Math.floor((robotPos.x - 25) / 50) * 50;
+            const endX = Math.ceil((robotPos.x + 25) / 50) * 50;
+            const startY = Math.floor((robotPos.y - 25) / 50) * 50;
+            const endY = Math.ceil((robotPos.y + 25) / 50) * 50;
+            
+            for (let i = startX; i <= endX; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, startY);
+                ctx.lineTo(i, endY);
+                ctx.stroke();
+            }
+            for (let i = startY; i <= endY; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(startX, i);
+                ctx.lineTo(endX, i);
+                ctx.stroke();
+            }
+            
+            // إعادة رسم النجمة إذا كانت في المنطقة
+            if (Math.abs(robotPos.x - 350) < 50 && Math.abs(robotPos.y - 100) < 50) {
+                ctx.fillStyle = '#FFD700';
+                ctx.font = '30px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('⭐', 350, 120);
+            }
+            
+            // رسم الروبوت
+            ctx.fillStyle = '#2196F3';
+            ctx.fillRect(robotPos.x - 15, robotPos.y - 15, 30, 30);
+            
+            // رسم اتجاه الروبوت
+            ctx.fillStyle = 'white';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            const arrows = ['→', '↓', '←', '↑'];
+            ctx.fillText(arrows[robotDir], robotPos.x, robotPos.y + 5);
+        }
+
+        function addPiece(command, text) {
+            const dropZone = document.getElementById('commandSequence');
+            
+            // إزالة النص التوضيحي
+            if (dropZone.querySelector('p')) {
+                dropZone.innerHTML = '';
+            }
+
+            // إنشاء قطعة جديدة
+            const piece = document.createElement('div');
+            piece.className = 'dropped-piece';
+            piece.innerHTML = `
+                ${text}
+                <button class="remove-btn" onclick="removePiece(this)">×</button>
+            `;
+            
+            dropZone.appendChild(piece);
+            robotCommands.push(command);
+        }
+
+        function removePiece(btn) {
+            const piece = btn.parentElement;
+            const index = Array.from(piece.parentElement.children).indexOf(piece);
+            robotCommands.splice(index, 1);
+            piece.remove();
+            
+            // إضافة النص التوضيحي إذا لم تبق قطع
+            const dropZone = document.getElementById('commandSequence');
+            if (dropZone.children.length === 0) {
+                dropZone.innerHTML = '<p style="color: #666; text-align: center; width: 100%;">انقر على قطع البازل لإضافتها هنا</p>';
+            }
+        }
+
+        function clearCommands() {
+            robotCommands = [];
+            document.getElementById('commandSequence').innerHTML = '<p style="color: #666; text-align: center; width: 100%;">انقر على قطع البازل لإضافتها هنا</p>';
+            clearMessage('robotMessage');
+        }
+
+        function resetRobot() {
+            initRobot();
+            clearMessage('robotMessage');
+        }
+
+        function runSequence() {
+            if (robotCommands.length === 0) {
+                showMessage('robotMessage', 'أضف بعض الأوامر أولاً! 🎯', 'info');
+                return;
+            }
+
+            let step = 0;
+            clearMessage('robotMessage');
+
+            function executeStep() {
+                if (step >= robotCommands.length) {
+                    checkSuccess();
+                    return;
+                }
+
+                const command = robotCommands[step];
+
+                switch(command) {
+                    case 'forward':
+                        moveForward();
+                        break;
+                    case 'right':
+                        robotDir = (robotDir + 1) % 4;
+                        break;
+                    case 'left':
+                        robotDir = (robotDir + 3) % 4;
+                        break;
+                }
+
+                drawRobot();
+                step++;
+                setTimeout(executeStep, 1000);
+            }
+
+            executeStep();
+        }
+
+        function moveForward() {
+            const moves = [
+                { x: 50, y: 0 },   // يمين
+                { x: 0, y: 50 },   // أسفل
+                { x: -50, y: 0 },  // يسار
+                { x: 0, y: -50 }   // أعلى
+            ];
+
+            const move = moves[robotDir];
+            const newX = robotPos.x + move.x;
+            const newY = robotPos.y + move.y;
+
+            // فحص الحدود
+            if (newX >= 25 && newX <= 375 && newY >= 25 && newY <= 275) {
+                robotPos.x = newX;
+                robotPos.y = newY;
+            }
+        }
+
+        function checkSuccess() {
+            if (Math.abs(robotPos.x - 350) <= 25 && Math.abs(robotPos.y - 100) <= 25) {
+                showMessage('robotMessage', 'رائع! وصل الروبوت للنجمة! 🎉⭐', 'success');
+                celebrate();
+            } else {
+                showMessage('robotMessage', 'حاول مرة أخرى! الروبوت لم يصل للنجمة بعد 🤔', 'info');
+            }
+        }
+
+        // ===== لعبة الأنماط =====
+        
+        function createPattern() {
+            const colors = ['red', 'blue', 'green', 'yellow'];
+            currentPattern = [];
+            userAnswers = [];
+            
+            const grid = document.getElementById('patternGrid');
+            grid.innerHTML = '';
+
+            // إنشاء نمط بسيط: أحمر-أزرق-أحمر-أزرق...
+            const pattern = [colors[0], colors[1], colors[0], colors[1]];
+
+            for (let i = 0; i < 16; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'pattern-cell';
+                
+                if (i < 12) {
+                    // أول 12 خلية تُظهر النمط
+                    const colorIndex = i % 4;
+                    const color = pattern[colorIndex];
+                    cell.classList.add(color);
+                    currentPattern.push(color);
+                } else {
+                    // آخر 4 خلايا للإجابة
+                    cell.classList.add('empty');
+                    cell.onclick = () => selectColor(cell, i);
+                    currentPattern.push(pattern[i % 4]); // الإجابة الصحيحة
+                }
+                
+                grid.appendChild(cell);
+            }
+            clearMessage('patternMessage');
+        }
+
+        function selectColor(cell, index) {
+            const colors = ['red', 'blue', 'green', 'yellow'];
+            
+            // إزالة اللون الحالي
+            colors.forEach(color => cell.classList.remove(color));
+            cell.classList.remove('empty');
+            
+            // العثور على اللون التالي
+            let currentColorIndex = userAnswers[index] ? colors.indexOf(userAnswers[index]) : -1;
+            currentColorIndex = (currentColorIndex + 1) % colors.length;
+            
+            const newColor = colors[currentColorIndex];
+            cell.classList.add(newColor);
+            userAnswers[index] = newColor;
+        }
+
+        function checkPattern() {
+            let correct = true;
+            for (let i = 12; i < 16; i++) {
+                if (userAnswers[i] !== currentPattern[i]) {
+                    correct = false;
+                    break;
+                }
+            }
+
+            if (correct) {
+                showMessage('patternMessage', 'ممتاز! أكملت النمط بشكل صحيح! 🌟', 'success');
+                celebrate();
+            } else {
+                showMessage('patternMessage', 'تحقق من النمط مرة أخرى! 🔍', 'info');
+            }
+        }
+
+        function newPattern() {
+            createPattern();
+        }
+
+        // ===== لعبة المنطق =====
+        
+        function createLogic() {
+            const puzzles = [
+                {
+                    sequence: ['🍎', '🍌', '🍎'],
+                    options: ['🍌', '🍊', '🍇'],
+                    answer: '🍌'
+                },
+                {
+                    sequence: ['⭐', '⭐⭐', '⭐⭐⭐'],
+                    options: ['⭐⭐⭐⭐', '⭐⭐', '⭐'],
+                    answer: '⭐⭐⭐⭐'
+                },
+                {
+                    sequence: ['🔴', '🔵', '🔴'],
+                    options: ['🔵', '🟢', '🔴'],
+                    answer: '🔵'
+                }
+            ];
+
+            const puzzle = puzzles[Math.floor(Math.random() * puzzles.length)];
+            logicAnswer = puzzle.answer;
+
+            const puzzleDiv = document.getElementById('logicPuzzle');
+            puzzleDiv.innerHTML = '';
+
+            // إضافة عناصر التسلسل
+            puzzle.sequence.forEach(item => {
+                const block = document.createElement('div');
+                block.className = 'logic-block filled';
+                block.textContent = item;
+                puzzleDiv.appendChild(block);
+            });
+
+            // إضافة مربع الإجابة
+            const answerBlock = document.createElement('div');
+            answerBlock.className = 'logic-block';
+            answerBlock.textContent = '؟';
+            answerBlock.id = 'answerBlock';
+            puzzleDiv.appendChild(answerBlock);
+
+            // إنشاء خيارات الإجابة
+            const optionsDiv = document.getElementById('logicOptions');
+            optionsDiv.innerHTML = '';
+
+            puzzle.options.forEach(option => {
+                const optionBtn = document.createElement('button');
+                optionBtn.className = 'logic-option';
+                optionBtn.textContent = option;
+                optionBtn.onclick = () => selectLogicOption(option, optionBtn);
+                optionsDiv.appendChild(optionBtn);
+            });
+
+            clearMessage('logicMessage');
+        }
+
+        function selectLogicOption(option, button) {
+            // إزالة التحديد من جميع الأزرار
+            document.querySelectorAll('.logic-option').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            // تحديد الزر المختار
+            button.classList.add('selected');
+
+            // تحديث مربع الإجابة
+            const answerBlock = document.getElementById('answerBlock');
+            answerBlock.textContent = option;
+            answerBlock.classList.add('filled');
+
+            // حفظ الإجابة
+            userLogicAnswer = option;
+        }
+
+        function checkLogic() {
+            if (!userLogicAnswer) {
+                showMessage('logicMessage', 'اختر إجابة أولاً! 👆', 'info');
+                return;
+            }
+
+            if (userLogicAnswer === logicAnswer) {
+                showMessage('logicMessage', 'ممتاز! إجابة صحيحة! 🧠✨', 'success');
+                celebrate();
+            } else {
+                showMessage('logicMessage', 'فكر مرة أخرى في النمط! 💭', 'info');
+            }
+        }
+
+        function newLogic() {
+            userLogicAnswer = null;
+            createLogic();
+        }
+
+        // ===== الدوال المساعدة =====
+
+        function showMessage(elementId, text, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="message ${type}">${text}</div>`;
+
+            // إخفاء الرسالة بعد 5 ثوان
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 5000);
+        }
+
+        function clearMessage(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+
+        function celebrate() {
+            const celebration = document.getElementById('celebration');
+            celebration.innerHTML = '';
+
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', '#FF9FF3', '#54A0FF'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                celebration.appendChild(confetti);
+            }
+
+            // مسح الاحتفال بعد 5 ثوان
+            setTimeout(() => {
+                celebration.innerHTML = '';
+            }, 5000);
+
+            // تشغيل صوت بسيط (اختياري)
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // نوتة C5
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log('الصوت غير مدعوم في هذا المتصفح');
+            }
+        }
+
+        // متغير لحفظ إجابة لعبة المنطق
+        let userLogicAnswer = null;
+
+        // دعم لوحة المفاتيح
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const focusedElement = document.activeElement;
+                if (focusedElement.classList.contains('btn') || 
+                    focusedElement.classList.contains('logic-option') ||
+                    focusedElement.classList.contains('puzzle-piece')) {
+                    e.preventDefault();
+                    focusedElement.click();
+                }
+            }
+        });
+
+        // إضافة خصائص الوصول السهل
+        function initAccessibility() {
+            // إضافة خصائص ARIA للأزرار
+            document.querySelectorAll('.btn, .logic-option, .puzzle-piece').forEach(element => {
+                element.setAttribute('role', 'button');
+                element.setAttribute('tabindex', '0');
+            });
+
+            document.querySelectorAll('.pattern-cell').forEach(cell => {
+                cell.setAttribute('role', 'button');
+                cell.setAttribute('tabindex', '0');
+                cell.setAttribute('aria-label', 'خلية نمط قابلة للنقر');
+            });
+        }
+
+        // تشغيل إعدادات الوصول السهل عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', initAccessibility);
+
+        // حفظ التقدم (اختياري)
+        let gameProgress = {
+            robotWins: 0,
+            patternWins: 0,
+            logicWins: 0
+        };
+
+        function saveProgress(gameType) {
+            gameProgress[gameType]++;
+            try {
+                localStorage.setItem('kidscodingprogress', JSON.stringify(gameProgress));
+            } catch (e) {
+                console.log('لا يمكن حفظ التقدم');
+            }
+        }
+
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('kidscodingprogress');
+                if (saved) {
+                    gameProgress = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.log('لا يمكن تحميل التقدم المحفوظ');
+            }
+        }
+
+        // تحميل التقدم عند بدء التطبيق
+        document.addEventListener('DOMContentLoaded', loadProgress);
+
+        // تحديث دوال الفوز لحفظ التقدم
+        const originalCheckSuccess = checkSuccess;
+        checkSuccess = function() {
+            if (Math.abs(robotPos.x - 350) <= 25 && Math.abs(robotPos.y - 100) <= 25) {
+                showMessage('robotMessage', 'رائع! وصل الروبوت للنجمة! 🎉⭐', 'success');
+                celebrate();
+                saveProgress('robotWins');
+            } else {
+                showMessage('robotMessage', 'حاول مرة أخرى! الروبوت لم يصل للنجمة بعد 🤔', 'info');
+            }
+        };
+
+        const originalCheckPattern = checkPattern;
+        checkPattern = function() {
+            let correct = true;
+            for (let i = 12; i < 16; i++) {
+                if (userAnswers[i] !== currentPattern[i]) {
+                    correct = false;
+                    break;
+                }
+            }
+
+            if (correct) {
+                showMessage('patternMessage', 'ممتاز! أكملت النمط بشكل صحيح! 🌟', 'success');
+                celebrate();
+                saveProgress('patternWins');
+            } else {
+                showMessage('patternMessage', 'تحقق من النمط مرة أخرى! 🔍', 'info');
+            }
+        };
+
+        const originalCheckLogic = checkLogic;
+        checkLogic = function() {
+            if (!userLogicAnswer) {
+                showMessage('logicMessage', 'اختر إجابة أولاً! 👆', 'info');
+                return;
+            }
+
+            if (userLogicAnswer === logicAnswer) {
+                showMessage('logicMessage', 'ممتاز! إجابة صحيحة! 🧠✨', 'success');
+                celebrate();
+                saveProgress('logicWins');
+            } else {
+                showMessage('logicMessage', 'فكر مرة أخرى في النمط! 💭', 'info');
+            }
+        };
+
+        // تحسينات للهواتف المحمولة
+        let touchStartX, touchStartY;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', function(e) {
+            if (!touchStartX || !touchStartY) {
+                return;
+            }
+
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+
+            const deltaX = touchStartX - touchEndX;
+            const deltaY = touchStartY - touchEndY;
+
+            // إذا كان اللمس أقل من 10 بكسل، اعتبره نقرة
+            if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10) {
+                const target = e.target;
+                if (target.classList.contains('puzzle-piece') || 
+                    target.classList.contains('pattern-cell') || 
+                    target.classList.contains('logic-option') ||
+                    target.classList.contains('btn')) {
+                    target.click();
+                }
+            }
+
+            touchStartX = null;
+            touchStartY = null;
+        }, { passive: true });
+
+        console.log('🎮 تطبيق مغامرات البرمجة للأطفال جاهز!');
+        console.log('📱 يعمل على جميع الأجهزة');
+        console.log('🔧 تم تطويره بواسطة FolioCrafter');
+    </script>
+</body>
+</html>
